@@ -12,7 +12,7 @@ public class PaymentService {
         this.mailService = mailService;
     }
 
-    public PaymentRequest createPaymenRequest(int amount, CreditCart creditCart) {
+    public PaymentRequest createPaymentRequest(int amount, CreditCart creditCart) {
         logger.info("Created payment for sale with the amount: " + amount);
         if (amount > 1000) {
             mailService.send("admin@localhost");

@@ -1,6 +1,5 @@
 package con.github.ismail2ov.ecommerce;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,7 +26,7 @@ public class PaymentServiceShould {
         PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
         when(operatorRate.getRate("MC")).thenReturn(5);
 
-        PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
+        PaymentRequest actual = paymentService.createPaymentRequest(amount, creditCart);
 
         assertThat(actual).isEqualTo(expected);
         verifyNoInteractions(mailService);
@@ -40,7 +39,7 @@ public class PaymentServiceShould {
         PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
         when(operatorRate.getRate("MC")).thenReturn(5);
 
-        PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
+        PaymentRequest actual = paymentService.createPaymentRequest(amount, creditCart);
 
         assertThat(actual).isEqualTo(expected);
 

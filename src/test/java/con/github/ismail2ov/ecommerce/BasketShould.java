@@ -29,16 +29,19 @@ public class BasketShould {
     @Test
     void restore_last_client_basket() {
         UUID customerId = UUID.randomUUID();
-        Item item = new Item("MacBook", 2999);
+        String itemName = "MacBook";
+        int itemPrice = 2999;
+        Item item = new Item(itemName, itemPrice);
+        basket.addItem(item);
         when(customer.getCustomerId()).thenReturn(customerId);
         when(basketRepository.getAllBy(customerId)).thenReturn(List.of(item));
 
         Basket actual = new Basket(customer, basketRepository);
 
         assertThat(actual.getItems()).hasSize(1);
-        assertThat(actual.getAmount()).isEqualTo(2999);
+        assertThat(actual.getAmount()).isEqualTo(itemPrice);
         assertThat(actual.getItems()).extracting("name")
-                .contains("MacBook")
+                .contains(itemName)
                 .doesNotContain("iPod", "iPad");
     }
 }
