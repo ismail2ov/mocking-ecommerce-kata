@@ -22,4 +22,8 @@ public class Basket {
         items.add(item);
         basketRepository.save(customer.getCustomerId(), items);
     }
+
+    public int getAmount() {
+        return items.stream().mapToInt(Item::getPrice).sum();
+    }
 }
