@@ -3,9 +3,12 @@ package con.github.ismail2ov.ecommerce;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BasketShould {
     private Basket basket;
@@ -14,9 +17,8 @@ public class BasketShould {
 
     @BeforeEach
     void setUp() {
-        UUID customerId = UUID.randomUUID();
-        customer = new Customer(customerId, "Pepe");
-        basketRepository = new FakeBasketRepository();
+        customer = mock(Customer.class);
+        basketRepository = mock(BasketRepository.class);
         basket = new Basket(customer, basketRepository);
     }
 
@@ -27,8 +29,10 @@ public class BasketShould {
 
     @Test
     void restore_last_client_basket() {
+        UUID customerId = UUID.randomUUID();
         Item item = new Item("MacBook", 2999);
-        basket.addItem(item);
+        when(customer.getCustomerId()).thenReturn(customerId);
+        when(basketRepository.getAllBy(customerId)).thenReturn(List.of(item));
 
         Basket actual = new Basket(customer, basketRepository);
 

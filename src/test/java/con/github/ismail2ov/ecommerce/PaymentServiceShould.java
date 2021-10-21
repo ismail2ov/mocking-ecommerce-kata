@@ -3,62 +3,48 @@ package con.github.ismail2ov.ecommerce;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 public class PaymentServiceShould {
-    private Basket basket;
-    private Customer customer;
-    private BasketRepository basketRepository;
+    private CreditCart creditCart;
+    private OperatorRate operatorRate;
+    private Logger logger;
+    private MailService mailService;
 
     @BeforeEach
     void setUp() {
-        UUID customerId = UUID.randomUUID();
-        customer = new Customer(customerId, "Pepe");
-        basketRepository = new FakeBasketRepository();
-        basket = new Basket(customer, basketRepository);
+        this.creditCart = mock(CreditCart.class);
+        this.operatorRate = mock(OperatorRate.class);
+        this.logger = mock(Logger.class);
+        this.mailService = mock(MailService.class);
     }
 
     @Test
     void create_payment_request() {
-        Item item = new Item("iPod", 99);
-        basket.addItem(item);
-
-        int amount = basket.getAmount();
-        CreditCart creditCart = new CreditCart();
-        OperatorRateStub operatorRate = new OperatorRateStub();
-        operatorRate.when("getRate", 5);
+        int amount = 99;
         PaymentRequest expected = new PaymentRequest(amount, creditCart, 5);
-        Logger logger = new DummyLoggerImpl();
-        MailService mailService = null;
-
         PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
+        when(operatorRate.getRate("MC")).thenReturn(5);
 
         PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
 
         assertThat(actual).isEqualTo(expected);
+        verifyNoInteractions(mailService);
     }
 
     @Test
-    void send_an_email_when_payment_total_is_more_than_1000() throws Exception {
-        Item item = new Item("MacBook", 2999);
-        basket.addItem(item);
-
-        int amount = basket.getAmount();
-        CreditCart creditCart = new CreditCart();
-        OperatorRateStub operatorRate = new OperatorRateStub();
-        operatorRate.when("getRate", 5);
+    void send_an_email_when_payment_total_is_more_than_1000() {
+        int amount = 2999;
         PaymentRequest expected = new PaymentRequest(amount, creditCart, 5);
-        Logger logger = new DummyLoggerImpl();
-
-        MailServiceMock mailService = new MailServiceMock();
         PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
+        when(operatorRate.getRate("MC")).thenReturn(5);
 
         PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
 
         assertThat(actual).isEqualTo(expected);
-        mailService.verify("send");
-        mailService.verifyNoMoreInteraction();
+
+        verify(mailService).send(anyString());
+        verifyNoMoreInteractions(mailService);
     }
 }

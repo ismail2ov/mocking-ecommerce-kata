@@ -4,9 +4,9 @@ import lombok.Value;
 
 @Value
 public class PaymentRequest {
-    private final int amount;
-    private final CreditCart creditCart;
-    private int operatorRate;
+    int amount;
+    CreditCart creditCart;
+    int operatorRate;
 
     public PaymentRequest(int amount, CreditCart creditCart, int operatorRate) {
         this.amount = amount;
