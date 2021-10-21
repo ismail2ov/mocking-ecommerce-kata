@@ -1,26 +1,25 @@
 package con.github.ismail2ov.ecommerce;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class BasketShould {
-    private Basket basket;
+    @Mock
     private Customer customer;
+    @Mock
     private BasketRepository basketRepository;
-
-    @BeforeEach
-    void setUp() {
-        customer = mock(Customer.class);
-        basketRepository = mock(BasketRepository.class);
-        basket = new Basket(customer, basketRepository);
-    }
+    @InjectMocks
+    private Basket basket;
 
     @Test
     void has_no_items_when_is_initialized() {
@@ -37,6 +36,7 @@ public class BasketShould {
         Basket actual = new Basket(customer, basketRepository);
 
         assertThat(actual.getItems()).hasSize(1);
+        assertThat(actual.getAmount()).isEqualTo(2999);
         assertThat(actual.getItems()).extracting("name")
                 .contains("MacBook")
                 .doesNotContain("iPod", "iPad");

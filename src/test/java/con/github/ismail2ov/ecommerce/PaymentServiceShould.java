@@ -2,23 +2,23 @@ package con.github.ismail2ov.ecommerce;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class PaymentServiceShould {
+    @Mock
     private CreditCart creditCart;
+    @Mock
     private OperatorRate operatorRate;
+    @Mock
     private Logger logger;
+    @Mock
     private MailService mailService;
-
-    @BeforeEach
-    void setUp() {
-        this.creditCart = mock(CreditCart.class);
-        this.operatorRate = mock(OperatorRate.class);
-        this.logger = mock(Logger.class);
-        this.mailService = mock(MailService.class);
-    }
 
     @Test
     void create_payment_request() {
