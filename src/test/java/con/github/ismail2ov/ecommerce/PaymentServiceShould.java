@@ -27,13 +27,38 @@ public class PaymentServiceShould {
 
         int amount = basket.getAmount();
         CreditCart creditCart = new CreditCart();
-        PaymentRequest expected = new PaymentRequest(amount, creditCart);
+        OperatorRateStub operatorRate = new OperatorRateStub();
+        operatorRate.when("getRate", 5);
+        PaymentRequest expected = new PaymentRequest(amount, creditCart, 5);
         Logger logger = new DummyLoggerImpl();
+        MailService mailService = null;
 
-        PaymentService paymentService = new PaymentService(logger);
+        PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
 
         PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void send_an_email_when_payment_total_is_more_than_1000() throws Exception {
+        Item item = new Item("MacBook", 2999);
+        basket.addItem(item);
+
+        int amount = basket.getAmount();
+        CreditCart creditCart = new CreditCart();
+        OperatorRateStub operatorRate = new OperatorRateStub();
+        operatorRate.when("getRate", 5);
+        PaymentRequest expected = new PaymentRequest(amount, creditCart, 5);
+        Logger logger = new DummyLoggerImpl();
+
+        MailServiceMock mailService = new MailServiceMock();
+        PaymentService paymentService = new PaymentService(logger, operatorRate, mailService);
+
+        PaymentRequest actual = paymentService.createPaymenRequest(amount, creditCart);
+
+        assertThat(actual).isEqualTo(expected);
+        mailService.verify("send");
+        mailService.verifyNoMoreInteraction();
     }
 }

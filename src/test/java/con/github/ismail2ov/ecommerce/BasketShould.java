@@ -27,14 +27,14 @@ public class BasketShould {
 
     @Test
     void restore_last_client_basket() {
-        Item item = new Item("iPod", 99);
+        Item item = new Item("MacBook", 2999);
         basket.addItem(item);
 
         Basket actual = new Basket(customer, basketRepository);
 
         assertThat(actual.getItems()).hasSize(1);
         assertThat(actual.getItems()).extracting("name")
-                .contains("iPod")
-                .doesNotContain("iPad");
+                .contains("MacBook")
+                .doesNotContain("iPod", "iPad");
     }
 }
